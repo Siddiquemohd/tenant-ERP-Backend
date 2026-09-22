@@ -48,6 +48,13 @@ app.use('/api/invoices', invoiceRoutes);
 app.use('/api/purchase-orders', purchaseOrderRoutes);
 app.use('/api/mobile', mobileRoutes);
 
+app.get('/', (req, res) => {
+  res.json({
+    status: 'OK',
+    message: 'TenantERP Express MVC Backend is Live and Operational',
+  });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'TenantERP Express MVC Backend Operational' });
 });
