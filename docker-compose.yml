@@ -1,0 +1,62 @@
+services:
+  db:
+    image: postgres:14
+
+    container_name: tenanterp_db_staging
+
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    ports:
+      - "127.0.0.1:5555:5432"
+
+    volumes:
+      - tenanterp_stagingdata:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+    networks:
+      - shared_network
+
+  tenant-erp-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: tenant-erp-backend-staging
+
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    ports:
+      - "127.0.0.1:2000:2000"
+
+    volumes:
+      - tenanterp_logs:/usr/src/app/logs
+      - tenanterp_tickets:/usr/src/app/public/uploads/tickets
+      - tenanterp_hvac_tickets:/usr/src/app/public/uploads/hvac_tickets
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    networks:
+      - shared_network
+
+volumes:
+  tenanterp_stagingdata:
+  tenanterp_tickets:
+  tenanterp_hvac_tickets:
+  tenanterp_logs:
+
+networks:
+  shared_network:
+    driver: bridge

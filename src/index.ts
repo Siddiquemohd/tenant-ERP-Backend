@@ -18,7 +18,7 @@ import mobileRoutes from './routes/mobileRoutes';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 2000;
 
 // Configure CORS to explicitly allow custom x-tenant-id and Authorization headers
 app.use(
