@@ -1,8 +1,10 @@
-FROM node:20-alpine AS base
+FROM node:20-bookworm-slim AS base
 
 WORKDIR /app
 
-RUN apk add --no-cache openssl
+RUN apt-get update \
+    && apt-get install -y openssl \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
 RUN npm ci
@@ -16,16 +18,19 @@ RUN npx prisma generate
 RUN npm run build
 
 
-FROM node:20-alpine AS production
+FROM node:20-bookworm-slim AS production
 
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-RUN apk add --no-cache openssl
+RUN apt-get update \
+    && apt-get install -y openssl \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
-RUN npm ci --omit=dev --ignore-scripts=false && npm cache clean --force
+RUN npm ci --omit=dev --ignore-scripts=false \
+    && npm cache clean --force
 
 COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=build /app/node_modules/@prisma ./node_modules/@prisma
