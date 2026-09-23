@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { requireAuth } from '../middleware/authMiddleware';
 import {
   // Mobile Auth & Profile
+  mobileRegister,
   mobileLogin,
   mobileVerify2FA,
   mobileGetMe,
@@ -57,6 +58,7 @@ const router = Router();
  * PUBLIC MOBILE AUTH ROUTES
  * ============================================================================
  */
+router.post('/auth/register', mobileRegister);
 router.post('/auth/login', mobileLogin);
 router.post('/auth/verify-2fa', mobileVerify2FA);
 

@@ -23,6 +23,60 @@ const JWT_SECRET = process.env.JWT_SECRET || 'tenant_erp_super_secret_jwt_key_20
  * ============================================================================
  */
 
+export async function mobileRegister(req: Request, res: Response) {
+  try {
+    const { companyName, name, email, password, currency } = req.body;
+
+    if (!companyName || !name || !email || !password) {
+      return res.status(400).json({ error: 'Company Name, User Name, Email, and Password are required' });
+    }
+
+    const existingUser = await UserModel.findByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email address is already registered' });
+    }
+
+    // 1. Create Tenant Company
+    const company = await CompanyModel.create({
+      name: companyName,
+      currency: currency || 'USD',
+    });
+
+    // 2. Hash Password & Create Admin User
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await UserModel.create({
+      companyId: company.id,
+      name,
+      email,
+      passwordHash,
+      role: Role.ADMIN,
+    });
+
+    const token = jwt.sign(
+      {
+        userId: user.id,
+        email: user.email,
+        companyId: user.companyId,
+        role: user.role,
+      },
+      JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+
+    const { passwordHash: _, twoFactorSecret: __, ...userWithoutPassword } = user;
+
+    res.status(201).json({
+      token,
+      tenantId: company.id,
+      user: userWithoutPassword,
+      company,
+      message: 'Tenant company workspace and admin user registered successfully',
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
 export async function mobileLogin(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
