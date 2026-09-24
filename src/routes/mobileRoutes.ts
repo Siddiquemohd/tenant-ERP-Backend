@@ -49,6 +49,11 @@ import {
   mobileCreatePurchaseOrder,
   mobileUpdatePOStatus,
   mobileDeletePurchaseOrder,
+  // Mobile PDF Generation
+  mobileGetEstimatePDF,
+  mobileGetProformaPDF,
+  mobileGetInvoicePDF,
+  mobileGetPOPDF,
 } from '../controllers/mobileController';
 
 const router = Router();
@@ -96,6 +101,7 @@ router.delete('/items/:id', mobileDeleteItem);
 // Estimates
 router.get('/estimates', mobileGetEstimates);
 router.get('/estimates/:id', mobileGetEstimateById);
+router.get('/estimates/:id/pdf', mobileGetEstimatePDF);
 router.post('/estimates', mobileCreateEstimate);
 router.post('/estimates/:id/convert-proforma', mobileConvertEstimateToProforma);
 router.post('/estimates/:id/convert-invoice', mobileConvertEstimateToInvoice);
@@ -104,6 +110,7 @@ router.delete('/estimates/:id', mobileDeleteEstimate);
 // Proforma Invoices
 router.get('/proforma', mobileGetProformaInvoices);
 router.get('/proforma/:id', mobileGetProformaById);
+router.get('/proforma/:id/pdf', mobileGetProformaPDF);
 router.post('/proforma', mobileCreateProformaInvoice);
 router.post('/proforma/:id/convert-invoice', mobileConvertProformaToInvoice);
 router.delete('/proforma/:id', mobileDeleteProforma);
@@ -111,6 +118,7 @@ router.delete('/proforma/:id', mobileDeleteProforma);
 // Tax Invoices
 router.get('/invoices', mobileGetInvoices);
 router.get('/invoices/:id', mobileGetInvoiceById);
+router.get('/invoices/:id/pdf', mobileGetInvoicePDF);
 router.post('/invoices', mobileCreateInvoice);
 router.patch('/invoices/:id/status', mobileUpdateInvoiceStatus);
 router.delete('/invoices/:id', mobileDeleteInvoice);
@@ -118,6 +126,7 @@ router.delete('/invoices/:id', mobileDeleteInvoice);
 // Purchase Orders
 router.get('/purchase-orders', mobileGetPurchaseOrders);
 router.get('/purchase-orders/:id', mobileGetPOById);
+router.get('/purchase-orders/:id/pdf', mobileGetPOPDF);
 router.post('/purchase-orders', mobileCreatePurchaseOrder);
 router.patch('/purchase-orders/:id/status', mobileUpdatePOStatus);
 router.delete('/purchase-orders/:id', mobileDeletePurchaseOrder);
